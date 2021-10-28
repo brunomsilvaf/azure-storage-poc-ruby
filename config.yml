@@ -1,0 +1,5 @@
+azure:
+  url: "https://<storage-account-name>.blob.core.windows.net/<container-name>"
+  client_id:
+  client_secret:
+  tenant_id:
