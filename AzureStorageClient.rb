@@ -21,7 +21,7 @@ class AzureStorageClient
     @token_expiry = 60*60
 
     # acquire access token
-    token_url = "https://login.windows.net/" + tenant_id + "/oauth2/token"
+    token_url = "https://login.microsoftonline.com/" + tenant_id + "/oauth2/token"
     resp = RestClient.post(
       token_url,
       :grant_type    => 'client_credentials',
