@@ -1,6 +1,7 @@
 require 'azure/storage/blob'
-require 'adal'
 require 'yaml'
+require 'rest-client'
+require 'json'
 
 class AzureStorageClient
 
@@ -20,12 +21,18 @@ class AzureStorageClient
     @token_expiry = 60*60
 
     # acquire access token
-    auth_ctx = ADAL::AuthenticationContext.new(ADAL::Authority::WORLD_WIDE_AUTHORITY, tenant_id)
-    client_cred = ADAL::ClientCredential.new(client_id, client_secret)
-    token = auth_ctx.acquire_token_for_client("https://storage.azure.com/", client_cred)
+    token_url = "https://login.windows.net/" + tenant_id + "/oauth2/token"
+    resp = RestClient.post(
+      token_url,
+      :grant_type    => 'client_credentials',
+      :client_id     => client_id,
+      :client_secret => client_secret,
+      :resource      => 'https://storage.azure.com'
+    )
+    token = JSON.parse(resp)['access_token']
 
     # build credentials from access token and get blob client
-    token_credential = Azure::Storage::Common::Core::TokenCredential.new token.access_token
+    token_credential = Azure::Storage::Common::Core::TokenCredential.new token
     token_signer = Azure::Storage::Common::Core::Auth::TokenSigner.new token_credential
     client = Azure::Storage::Common::Client::new(storage_account_name: @storage_account_name, signer: token_signer)
     @blob_client = Azure::Storage::Blob::BlobService.new(client: client)
