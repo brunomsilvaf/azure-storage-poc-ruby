@@ -67,7 +67,7 @@ class AzureStorageClient
   end
 
   def get_blob_link(container_name = @container_name, blob_name)
-    user_delegation_key = @blob_client.get_user_delegation_key(Time.now, Time.now + 60)
+    user_delegation_key = @blob_client.get_user_delegation_key(Time.now.utc, Time.now.utc + @token_expiry)
     sas_generator = Azure::Storage::Common::Core::Auth::SharedAccessSignature.new(@storage_account_name, "", user_delegation_key)
     uri = @blob_client.generate_uri("#{container_name}/#{blob_name}")
     sas_token = sas_generator.signed_uri(uri, false, service: "b", permissions: "r", expiry: (Time.now.utc + @token_expiry).iso8601)
