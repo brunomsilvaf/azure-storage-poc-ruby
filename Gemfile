@@ -11,3 +11,8 @@ gem 'azure-storage-blob'
 
 # Rest client
 gem 'rest-client'
+
+# Testing
+group :test do
+  gem 'rspec'
+end

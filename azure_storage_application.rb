@@ -1,4 +1,4 @@
-require './AzureStorageClient'
+require './azure_storage_client'
 
 azure_client = AzureStorageClient.new
 
